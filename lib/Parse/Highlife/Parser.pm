@@ -211,7 +211,13 @@ sub parse
 	my $_t;
 	($_t) = Parse::Highlife::Rule::_parse_ignored_tokens( undef, $tokens, $t );
 	if( $_t < scalar @{$tokens} ) {
+		my @_tokens = splice @{$tokens}, $_t, 10;
+	
 		print "INFO: there are unparsed tokens after the parsed rule.\n";
+		print "The tokens after the syntax error are:\n";
+		dump_tokens(\@_tokens);
+		print "...\n";
+		exit;
 		#dump($tokens->[$_t]);
 	}
 

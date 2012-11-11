@@ -236,18 +236,51 @@ sub transformer
 	return $self->{'transformer'}->transformer( @args );
 }
 
+sub stringifier
+{
+	my( $self, @args ) = @_;
+	return $self->{'transformer'}->stringifier( @args );
+}
+
+sub readfile
+{
+	my( $self, $filename ) = @_;
+	return read_file( $filename );
+}
+
+sub parse
+{
+	my( $self, $string ) = @_;
+	my $ast = $self->{'parser'}->parse( $string );
+	#dump_ast($ast);
+	return $ast;
+}
+
+sub transform
+{
+	my( $self, $ast, @args ) = @_;
+	my $new_ast = $self->{'transformer'}->transform( $ast, @args );
+	#dump_ast($new_ast);
+	return $new_ast;
+}
+
+sub stringify
+{
+	my( $self, $ast, @args ) = @_;
+	return $self->{'transformer'}->stringify( $ast, @args );
+}
+
 sub compile
 {
 	my( $self, @filenames ) = @_;
+	my $stringified = '';
 	foreach my $file (@filenames) {
-		my $string = read_file( $file );
-		
-		my $ast = $self->{'parser'}->parse( $string );
-		#dump_ast($ast);
-		
-		my $new_ast = $self->{'transformer'}->transform( $ast );
-		#dump_ast($new_ast);
+		my $string 		= $self->readfile( $file );
+		my $ast 			= $self->parse( @filenames );
+		my $new_ast 	= $self->transform( $ast );
+		$stringified .= $self->stringify( $new_ast );
 	}
+	return $stringified;
 }
 
 sub link

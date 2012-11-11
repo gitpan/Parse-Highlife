@@ -88,6 +88,15 @@ sub nth_child
 	}
 }
 
+sub children
+{
+	my( $self ) = @_;
+	if( $self->{'category'} eq 'group' ) {
+		return @{$self->{'children'}};
+	}
+	return ();
+}
+
 sub first_child
 {
 	my( $self ) = @_;
